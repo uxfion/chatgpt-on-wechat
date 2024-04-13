@@ -67,12 +67,16 @@ available_setting = {
     # claude 配置
     "claude_api_cookie": "",
     "claude_uuid": "",
+    # claude api key
+    "claude_api_key":"",
     # 通义千问API, 获取方式查看文档 https://help.aliyun.com/document_detail/2587494.html
     "qwen_access_key_id": "",
     "qwen_access_key_secret": "",
     "qwen_agent_key": "",
     "qwen_app_id": "",
     "qwen_node_id": "",  # 流程编排模型用到的id，如果没有用到qwen_node_id，请务必保持为空字符串
+    # 阿里灵积模型api key
+    "dashscope_api_key": "",
     # Google Gemini Api Key
     "gemini_api_key": "",
     # wework的通用配置
@@ -254,6 +258,8 @@ def load_config():
     logger.info("[INIT] load config: {}".format(config))
 
     config.load_user_datas()
+
+
 
 
 def get_root():
