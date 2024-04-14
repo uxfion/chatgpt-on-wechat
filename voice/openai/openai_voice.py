@@ -16,6 +16,122 @@ import datetime, random
 class OpenaiVoice(Voice):
     def __init__(self):
         openai.api_key = conf().get("open_ai_api_key")
+        self.language = {
+            "en": "english",
+            "zh": "chinese",
+            "de": "german",
+            "es": "spanish",
+            "ru": "russian",
+            "ko": "korean",
+            "fr": "french",
+            "ja": "japanese",
+            "pt": "portuguese",
+            "tr": "turkish",
+            "pl": "polish",
+            "ca": "catalan",
+            "nl": "dutch",
+            "ar": "arabic",
+            "sv": "swedish",
+            "it": "italian",
+            "id": "indonesian",
+            "hi": "hindi",
+            "fi": "finnish",
+            "vi": "vietnamese",
+            "he": "hebrew",
+            "uk": "ukrainian",
+            "el": "greek",
+            "ms": "malay",
+            "cs": "czech",
+            "ro": "romanian",
+            "da": "danish",
+            "hu": "hungarian",
+            "ta": "tamil",
+            "no": "norwegian",
+            "th": "thai",
+            "ur": "urdu",
+            "hr": "croatian",
+            "bg": "bulgarian",
+            "lt": "lithuanian",
+            "la": "latin",
+            "mi": "maori",
+            "ml": "malayalam",
+            "cy": "welsh",
+            "sk": "slovak",
+            "te": "telugu",
+            "fa": "persian",
+            "lv": "latvian",
+            "bn": "bengali",
+            "sr": "serbian",
+            "az": "azerbaijani",
+            "sl": "slovenian",
+            "kn": "kannada",
+            "et": "estonian",
+            "mk": "macedonian",
+            "br": "breton",
+            "eu": "basque",
+            "is": "icelandic",
+            "hy": "armenian",
+            "ne": "nepali",
+            "mn": "mongolian",
+            "bs": "bosnian",
+            "kk": "kazakh",
+            "sq": "albanian",
+            "sw": "swahili",
+            "gl": "galician",
+            "mr": "marathi",
+            "pa": "punjabi",
+            "si": "sinhala",
+            "km": "khmer",
+            "sn": "shona",
+            "yo": "yoruba",
+            "so": "somali",
+            "af": "afrikaans",
+            "oc": "occitan",
+            "ka": "georgian",
+            "be": "belarusian",
+            "tg": "tajik",
+            "sd": "sindhi",
+            "gu": "gujarati",
+            "am": "amharic",
+            "yi": "yiddish",
+            "lo": "lao",
+            "uz": "uzbek",
+            "fo": "faroese",
+            "ht": "haitian creole",
+            "ps": "pashto",
+            "tk": "turkmen",
+            "nn": "nynorsk",
+            "mt": "maltese",
+            "sa": "sanskrit",
+            "lb": "luxembourgish",
+            "my": "myanmar",
+            "bo": "tibetan",
+            "tl": "tagalog",
+            "mg": "malagasy",
+            "as": "assamese",
+            "tt": "tatar",
+            "haw": "hawaiian",
+            "ln": "lingala",
+            "ha": "hausa",
+            "ba": "bashkir",
+            "jw": "javanese",
+            "su": "sundanese",
+            "yue": "cantonese",
+        }
+
+
+    def get_language_value(self, input_lang):
+        # 定义原始语言字典
+
+        # 创建一个辅助字典，将语言的缩写和全称都映射到相同的值
+        language_map = {}
+        for key, value in self.language.items():
+            language_map[key] = value
+            language_map[value] = value
+
+        # 返回匹配的语言值或未找到时的默认值
+        return language_map.get(input_lang.lower(), "Unknown language")
+    
 
     def voiceToText(self, voice_file):
         logger.debug("[Openai] voice file name={}".format(voice_file))
@@ -32,12 +148,15 @@ class OpenaiVoice(Voice):
             }
             data = {
                 "model": "whisper-1",
+                "response_format": "verbose_json",
             }
             response = requests.post(url, headers=headers, files=files, data=data)
             response_data = response.json()
             text = response_data['text']
+            language = response_data['language']
+            const.LANG = self.get_language_value(language)
             reply = Reply(ReplyType.TEXT, text)
-            logger.info("[Openai] voiceToText text={} voice file name={}".format(text, voice_file))
+            logger.info("[Openai] voiceToText language={} text={} voice file name={}".format(const.LANG, text, voice_file))
         except Exception as e:
             reply = Reply(ReplyType.ERROR, "我暂时还无法听清您的语音，请稍后再试吧~")
         finally:

@@ -36,3 +36,6 @@ MODEL_LIST = ["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "wenxin", "wenxin-4
 # channel
 FEISHU = "feishu"
 DINGTALK = "dingtalk"   
+
+# language
+LANG = "chinese"
